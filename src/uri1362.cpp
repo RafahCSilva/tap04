@@ -15,10 +15,7 @@
 //#define V true
 #define V false
 
-
 std::vector< int > *GRAFO;
-int *CAMISETAS;
-int *PESSOAS;
 int *EMPARELHAMENTO;
 
 #define TAM 6
@@ -32,11 +29,32 @@ std::string serve[2]; // Possiveis tamanhos q lhe serve
 
 bool *VISITADOS;
 
+bool DFS( int u ) {
+    for ( auto vizinho : GRAFO[ u ] ) {
+        if ( VISITADOS[ vizinho ] )
+            continue;
+        VISITADOS[ vizinho ] = true;
+        if ( EMPARELHAMENTO[ vizinho ] == vizinho || DFS( EMPARELHAMENTO[ vizinho ] ) ) {
+            EMPARELHAMENTO[ vizinho ] = u;
+            return true;
+        }
+    }
+    return false;
+}
 
-int emparelhamento_max();
+bool emparelhamento_max() {
+    VISITADOS = new bool[M];
+    for ( int pessoa = 0; pessoa < M; ++pessoa ) {
+        for ( int i = 0; i < M; ++i )
+            VISITADOS[ i ] = false;
+        if ( !DFS( pessoa ) )
+            return false;
+    }
+
+    return true;
+}
 
 int main() {
-
 
     std::cin >> T;
     for ( int caso = 0; caso < T; ++caso ) {
@@ -50,22 +68,15 @@ int main() {
             std::cerr << "  N6 repeticoes: " << N6 << std::endl;
         }
 
-
         // Monta o grafo vazio de N+M vertices
-        GRAFO = new std::vector< int >[N + M];
-
-        // ID das Pessoas
-        PESSOAS = new int[M];
-        for ( int m = 0; m < M; ++m )
-            PESSOAS[ m ] = m;
-
-        // ID das Camisetas
-        CAMISETAS = new int[N];
-        for ( int n = 0; n < N; ++n )
-            CAMISETAS[ n ] = M + n;
+        GRAFO = new std::vector< int >[M];
+//        std::vector< int > GRAFO[M];
+//        GRAFO = GRAFO;
 
         // Emparelhamento  i = i
         EMPARELHAMENTO = new int[N + M];
+//        int EMPARELHAMENTO[N + M];
+//        EMPARELHAMENTO = EMPARELHAMENTO;
         for ( int i = 0; i < ( N + M ); ++i )
             EMPARELHAMENTO[ i ] = i;
 
@@ -73,7 +84,10 @@ int main() {
         // Para cada Pessoa
         for ( int m = 0; m < M; ++m ) {
             // Suas possiveis camisetas
+
             std::cin >> serve[ 0 ] >> serve[ 1 ];
+            if ( V ) std::cout << m << ": " << serve[ 0 ] << " " << serve[ 1 ] << std::endl;
+
             for ( int s = 0; s < 2; ++s )
 
                 // Verificar todos os matchs
@@ -82,55 +96,29 @@ int main() {
 
                         // liga as pessoas com todas as possiveis camisetas
                         for ( int possib = 0; possib < N6; ++possib )
-                            GRAFO[ m ].push_back( t + M + ( possib * N6 ) );
+                            GRAFO[ m ].push_back( t + M + ( possib * 6 ) );
                 }
         }
 
         if ( V ) {
             std::cerr << "  Grafo: " << std::endl;
-            for ( int g = 0; g < M + N; ++g ) {
+            for ( int g = 0; g < M; ++g ) {
                 std::cerr << "    " << g << ": ";
                 for ( auto i : GRAFO[ g ] )
-                    std::cerr << i << ", ";
+                    std::cerr << i << "[" << TAMANHOS[ ( i - M ) % 6 ] << "], ";
                 std::cerr << std::endl;
             }
         }
 
-        if ( emparelhamento_max() >= M )
+        if ( emparelhamento_max() )
             std::cout << "YES" << std::endl;
         else
             std::cout << "NO" << std::endl;
+
+//        delete[] GRAFO;
+//        delete EMPARELHAMENTO;
     }
 
     return 0;
 }
 
-
-int DFS( int u ) {
-    for ( auto vizinho : GRAFO[ u ] ) {
-        if ( VISITADOS[ vizinho ] )
-            continue;
-        VISITADOS[ vizinho ] = true;
-        if ( EMPARELHAMENTO[ vizinho ] == vizinho || DFS( EMPARELHAMENTO[ vizinho ] ) ) {
-            EMPARELHAMENTO[ vizinho ] = u;
-            return 1;
-        }
-    }
-    return 0;
-}
-
-int emparelhamento_max() {
-    int cont = 0;
-
-    for ( int pessoa = 0; pessoa < M; ++pessoa ) {
-        VISITADOS = new bool[M];
-        for ( int i = 0; i < M; ++i )
-            VISITADOS[ i ] = false;
-        if ( EMPARELHAMENTO[ pessoa ] == pessoa && DFS( pessoa ) )
-            cont++;
-    }
-
-    if ( V ) std::cerr << "  Cont: " << cont << std::endl;
-
-    return cont;
-}
