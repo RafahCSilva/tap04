@@ -7,5 +7,8 @@
 #./cmake-build-debug/uri1362 < test/uri1362_in.txt
 
 
-g++ src/uri1362.cpp -o src/uri1362.exe -std=c++11 -O2 -lm
-./src/uri1362.exe < test/uri1362_in.txt
+#g++ src/uri1362.cpp -o src/uri1362.exe -std=c++11 -O2 -lm
+#./src/uri1362.exe < test/uri1362_in.txt
+
+g++ src/uri1330.cpp -o src/uri1330.exe -std=c++11 -O2 -lm
+./src/uri1330.exe < test/uri1330_in.txt

@@ -4,3 +4,4 @@ project(tap04)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(uri1362 src/uri1362.cpp)
+add_executable(uri1330 src/uri1330.cpp)
