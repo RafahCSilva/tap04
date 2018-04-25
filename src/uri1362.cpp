@@ -43,7 +43,6 @@ bool DFS( int u ) {
 }
 
 bool emparelhamento_max() {
-    VISITADOS = new bool[M];
     for ( int pessoa = 0; pessoa < M; ++pessoa ) {
         for ( int i = 0; i < M; ++i )
             VISITADOS[ i ] = false;
@@ -55,11 +54,14 @@ bool emparelhamento_max() {
 }
 
 int main() {
+    GRAFO = new std::vector< int >[30 + 36];
+    EMPARELHAMENTO = new int[30 + 36];
+    VISITADOS = new bool[30 + 36];
 
     std::cin >> T;
     for ( int caso = 0; caso < T; ++caso ) {
         std::cin >> N >> M;
-        N6 = N / 6;
+        N6 = N / TAM;
 
         if ( V ) {
             std::cerr << "Caso " << ( caso + 1 ) << "/" << T << ": " << std::endl;
@@ -69,14 +71,10 @@ int main() {
         }
 
         // Monta o grafo vazio de N+M vertices
-        GRAFO = new std::vector< int >[M];
-//        std::vector< int > GRAFO[M];
-//        GRAFO = GRAFO;
+        for ( int i = 0; i < ( 30 + 36 ); ++i )
+            GRAFO[ i ].clear();
 
         // Emparelhamento  i = i
-        EMPARELHAMENTO = new int[N + M];
-//        int EMPARELHAMENTO[N + M];
-//        EMPARELHAMENTO = EMPARELHAMENTO;
         for ( int i = 0; i < ( N + M ); ++i )
             EMPARELHAMENTO[ i ] = i;
 
@@ -96,7 +94,7 @@ int main() {
 
                         // liga as pessoas com todas as possiveis camisetas
                         for ( int possib = 0; possib < N6; ++possib )
-                            GRAFO[ m ].push_back( t + M + ( possib * 6 ) );
+                            GRAFO[ m ].push_back( M + t + ( possib * 6 ) );
                 }
         }
 
@@ -114,9 +112,6 @@ int main() {
             std::cout << "YES" << std::endl;
         else
             std::cout << "NO" << std::endl;
-
-//        delete[] GRAFO;
-//        delete EMPARELHAMENTO;
     }
 
     return 0;
