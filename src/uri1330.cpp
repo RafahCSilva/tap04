@@ -4,14 +4,13 @@
  * Projeto 4: URI 1330 - A Terra Herdada por Tio Tom
  * https://www.urionlinejudge.com.br/judge/pt/problems/view/1330
  *
- * Compile com C++ 17:
- *   g++ uri1330.cpp -o uri1330.exe -std=c++17
+ * Compile com C++ 11:
+ *   g++ uri1330.cpp -o uri1330.exe -std=c++11
  *
  */
 
 #include <iostream>
 #include <vector>
-#include <stdlib.h>
 
 //#define V true
 #define V false
@@ -28,7 +27,7 @@ int **TERRENO;
 #define t_VAZIO 0
 #define TOTAL (100 * 100)
 
-std::vector< int > *GRAFO;
+std::vector<int> *GRAFO;
 int *EMPARELHAMENTO;
 bool *VISITADOS;
 
@@ -45,11 +44,12 @@ int coord1to2_l( int x ) {
 }
 
 bool aumentador( int u ) {
-    for ( auto vizinho : GRAFO[ u ] ) {
+    for ( int vizinho : GRAFO[ u ] ) {
         if ( VISITADOS[ vizinho ] )
             continue;
         VISITADOS[ vizinho ] = true;
-        if ( EMPARELHAMENTO[ vizinho ] == -1 || aumentador( EMPARELHAMENTO[ vizinho ] ) ) {
+        if ( EMPARELHAMENTO[ vizinho ] == -1 ||
+             aumentador( EMPARELHAMENTO[ vizinho ] )) {
             EMPARELHAMENTO[ vizinho ] = u;
             EMPARELHAMENTO[ u ] = vizinho;
             return true;
@@ -60,7 +60,7 @@ bool aumentador( int u ) {
 
 int main() {
 
-    GRAFO = new std::vector< int >[TOTAL];
+    GRAFO = new std::vector<int>[TOTAL];
     EMPARELHAMENTO = new int[TOTAL];
     VISITADOS = new bool[TOTAL];
 
@@ -108,14 +108,14 @@ int main() {
             }
         }
 
-        std::vector< int > PAR, IMPAR;
+        std::vector<int> PAR, IMPAR;
         for ( int l = 0; l < N; ++l ) {
             for ( int c = 0; c < M; ++c )
                 if ( TERRENO[ l ][ c ] != t_LAGO ) {
                     int key = coord2to1( l, c );
 //                    GRAFO[ key ].empty();
                     EMPARELHAMENTO[ key ] = -1;
-                    if ( ( c + l ) % 2 )
+                    if (( c + l ) % 2 )
                         IMPAR.push_back( key );
                     else
                         PAR.push_back( key );
@@ -128,26 +128,29 @@ int main() {
                 int b = coord1to2_c( impar );
                 int c = coord1to2_l( par );
                 int d = coord1to2_c( par );
-                if ( ( abs( a - c ) == 1 && b == d ) ||
-                     ( abs( b - d ) == 1 && a == c ) ) {
+                if (( abs( a - c ) == 1 && b == d ) ||
+                    ( abs( b - d ) == 1 && a == c )) {
                     GRAFO[ impar ].push_back( par );
                     GRAFO[ par ].push_back( impar );
                 }
             }
         }
 
+        // Encontrar o emparelhamento maximo
         int emp_max = 0;
+        // Para cada elemento de A
+        for ( int i = 0; i < ( N * M ); ++i )
+            if ( EMPARELHAMENTO[ i ] == -1 ) {
+                // inicializa os Visitados
+                for ( int v = 0; v < ( N * M ); ++v )
+                    VISITADOS[ v ] = false;
 
-        for ( int i = 0; i < ( N * M ); ++i ) {
-            if ( EMPARELHAMENTO[ i ] == t_LAGO ) {
-                for ( int i = 0; i < M; ++i )
-                    VISITADOS[ i ] = false;
-                if ( aumentador( i ) )
+                // Ha caminha aumentador?
+                if ( aumentador( i ))
                     emp_max++;
             }
-        }
+        // Resultado
         std::cout << emp_max << std::endl;
-
     }
 
     return 0;
