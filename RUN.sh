@@ -12,3 +12,6 @@
 
 g++ src/uri1330.cpp -o src/uri1330.exe -std=c++11 -O2 -lm
 ./src/uri1330.exe < test/uri1330_in.txt
+
+#g++ src/uri1331.cpp -o src/uri1331.exe -std=c++11 -O2 -lm
+#./src/uri1331.exe < test/uri1331_in.txt
