@@ -15,7 +15,7 @@
 //#define V true
 #define V false
 
-std::vector< int > *GRAFO;
+std::vector<int> *GRAFO;
 int *EMPARELHAMENTO;
 
 #define TAM 6
@@ -29,12 +29,13 @@ std::string serve[2]; // Possiveis tamanhos q lhe serve
 
 bool *VISITADOS;
 
-bool DFS( int u ) {
-    for ( auto vizinho : GRAFO[ u ] ) {
+bool aumentador( int u ) {
+    for ( int vizinho : GRAFO[ u ] ) {
         if ( VISITADOS[ vizinho ] )
             continue;
         VISITADOS[ vizinho ] = true;
-        if ( EMPARELHAMENTO[ vizinho ] == vizinho || DFS( EMPARELHAMENTO[ vizinho ] ) ) {
+        if ( EMPARELHAMENTO[ vizinho ] == -1 ||
+             aumentador( EMPARELHAMENTO[ vizinho ] )) {
             EMPARELHAMENTO[ vizinho ] = u;
             return true;
         }
@@ -44,9 +45,9 @@ bool DFS( int u ) {
 
 bool emparelhamento_max() {
     for ( int pessoa = 0; pessoa < M; ++pessoa ) {
-        for ( int i = 0; i < M; ++i )
+        for ( int i = 0; i < ( 30 + 36 ); ++i )
             VISITADOS[ i ] = false;
-        if ( !DFS( pessoa ) )
+        if ( !aumentador( pessoa ))
             return false;
     }
 
@@ -54,7 +55,7 @@ bool emparelhamento_max() {
 }
 
 int main() {
-    GRAFO = new std::vector< int >[30 + 36];
+    GRAFO = new std::vector<int>[30 + 36];
     EMPARELHAMENTO = new int[30 + 36];
     VISITADOS = new bool[30 + 36];
 
@@ -76,7 +77,7 @@ int main() {
 
         // Emparelhamento  i = i
         for ( int i = 0; i < ( N + M ); ++i )
-            EMPARELHAMENTO[ i ] = i;
+            EMPARELHAMENTO[ i ] = -1;
 
         // Conectar pessoas com as camisetas
         // Para cada Pessoa
@@ -90,11 +91,11 @@ int main() {
 
                 // Verificar todos os matchs
                 for ( int t = 0; t < TAM; ++t ) {
-                    if ( !serve[ s ].compare( TAMANHOS[ t ] ) )
+                    if ( !serve[ s ].compare( TAMANHOS[ t ] ))
 
                         // liga as pessoas com todas as possiveis camisetas
                         for ( int possib = 0; possib < N6; ++possib )
-                            GRAFO[ m ].push_back( M + t + ( possib * 6 ) );
+                            GRAFO[ m ].push_back( M + t + ( possib * 6 ));
                 }
         }
 
@@ -108,7 +109,7 @@ int main() {
             }
         }
 
-        if ( emparelhamento_max() )
+        if ( emparelhamento_max())
             std::cout << "YES" << std::endl;
         else
             std::cout << "NO" << std::endl;
@@ -116,4 +117,3 @@ int main() {
 
     return 0;
 }
-
